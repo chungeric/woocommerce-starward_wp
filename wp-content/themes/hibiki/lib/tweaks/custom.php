@@ -115,7 +115,7 @@ function my_login_head() {
 /* ------------------------------------------------------------------------
 	Google Map API Key
 ------------------------------------------------------------------------ */
-if(get_field('google_map_api_key','option')) {
+if( function_exists('get_field') && get_field('google_map_api_key','option') ) {
   $googleMapApikey = get_field('google_map_api_key','option');
 } else {
   $googleMapApiKey = '';
