@@ -514,3 +514,14 @@ function roots_get_search_form() {
 }
 
 add_filter('get_search_form', 'roots_get_search_form');
+
+// --------------------------------------------------------------------------
+//   Admin footer modification
+// --------------------------------------------------------------------------
+
+function hibiki_remove_footer_admin ()
+{
+  echo '<span id="footer-thankyou">Developed by <a href="https://www.birdbrain.com.au" target="_blank">Birdbrain</a></span>';
+}
+
+add_filter('admin_footer_text', 'hibiki_remove_footer_admin');

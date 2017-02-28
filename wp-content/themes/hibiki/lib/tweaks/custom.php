@@ -1,6 +1,14 @@
 <?php
 // Custom Functions
 
+// Add home or internal class to body tag
+function body_classes($classes) {
+
+  $classes[] = is_front_page() ? 'home' : 'internal';
+  return $classes;
+
+}
+add_filter('body_class', 'body_classes', 10, 1);
 
 // Allow SVG files to be uploaded via Media Library
 function cc_mime_types($mimes) {
@@ -8,6 +16,50 @@ function cc_mime_types($mimes) {
   return $mimes;
 }
 add_filter('upload_mimes', 'cc_mime_types');
+
+// Remove Emoji Support
+remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+remove_action( 'wp_print_styles', 'print_emoji_styles' );
+
+// Tweet
+function get_tweet() {
+require dirname( __FILE__ ) . '/twitter/tmhOAuth.php';
+require dirname( __FILE__ ) . '/twitter/tmhUtilities.php';
+$tmhOAuth = new tmhOAuth(array(
+  'consumer_key'        => 'jJEOMbyUQq3PGL6dVYjcyWQqv',
+  'consumer_secret'     => 'z6sMzBKE6yIoHjY8wUlYxr30ctzpN8OsRJdpXW986zVL2vJpiL',
+  'user_token'          => '338781770-LimiozRWBNR5sljOM3oMpunIdkM5OOlnR9Imwprp',
+  'user_secret'         => 'sRs92EI3bVQSnsWFW0F5tME5MEAh8Uj6dO76R1epz1HpP',
+  'curl_ssl_verifypeer' => false
+));
+$code = $tmhOAuth->request('GET', $tmhOAuth->url('1.1/statuses/user_timeline'), array(
+  'screen_name' => 'username',
+  'count' => '1'
+));
+$response = $tmhOAuth->response['response'];
+$tweets = json_decode($response, true);
+foreach($tweets as $tweet):
+  ?>
+  <!-- Begin tweet -->
+  <p class="tweet">
+    <?php
+    // Access as an object
+    $tweetText = $tweet['text'];
+    $tweetDate = strtotime($tweet['created_at']);
+    //Convert urls to <a> links
+    $tweetText = preg_replace('/https?:\/\/([a-z0-9_\.\-\+\&\!\#\~\/\,]+)/i', '<a href="http://$1" target="_blank" rel="nofollow">http://$1</a>', $tweetText);
+    //Convert attags to twitter profiles in &lt;a&gt; links
+    $tweetText = preg_replace('/@([a-z0-9_]+)/i', '<a href="http://twitter.com/$1" target="_blank" rel="nofollow">@$1</a>', $tweetText);
+    //Convert hashtags to twitter searches in <a> links
+    $tweetText = preg_replace('/#([A-Za-z0-9\/\.]*)/', '<a href="http://twitter.com/search?q=$1" target="_blank" rel="nofollow">#$1</a>', $tweetText);
+    // Output
+    echo $tweetText;
+    ?>
+  </p>
+  <!-- End tweet -->
+<?php
+endforeach;
+}
 
 /* ------------------------------------------------------------------------
   Birdbrain settings - Admin options page
@@ -63,17 +115,41 @@ function my_login_head() {
 /* ------------------------------------------------------------------------
 	Google Map API Key
 ------------------------------------------------------------------------ */
-if(function_exists(get_field)){
-  if(get_field('google_map_api_key','option')) {
-    $googleMapApikey = get_field('google_map_api_key','option');
-  } else {
-    $googleMapApiKey = '';
-  }
-  function my_acf_init() {
-  	function_exists(acf_update_setting('google_api_key', $googleMapApikey));
-  }
-  add_action('acf/init', 'my_acf_init');
+if(get_field('google_map_api_key','option')) {
+  $googleMapApikey = get_field('google_map_api_key','option');
+} else {
+  $googleMapApiKey = '';
 }
+function my_acf_init() {
+	acf_update_setting('google_api_key', $googleMapApikey);
+}
+add_action('acf/init', 'my_acf_init');
+
+/* ------------------------------------------------------------------------
+  Gravity form - enable hide label
+------------------------------------------------------------------------ */
+add_filter("gform_enable_field_label_visibility_settings", "__return_true");
+
+/* ------------------------------------------------------------------------
+	Gravity form - go to anchor after form submit
+------------------------------------------------------------------------ */
+add_filter("gform_confirmation_anchor", create_function("","return true;"));
+
+/* ------------------------------------------------------------------------
+	Fix Gravity Form jQuery error
+------------------------------------------------------------------------ */
+function remove_head_scripts() {
+  remove_action('wp_head', 'wp_print_scripts');
+  remove_action('wp_head', 'wp_print_head_scripts', 9);
+  remove_action('wp_head', 'wp_enqueue_scripts', 1);
+
+  add_action('wp_footer', 'wp_print_scripts', 5);
+  add_action('wp_footer', 'wp_enqueue_scripts', 5);
+  add_action('wp_footer', 'wp_print_head_scripts', 5);
+}
+add_action( 'wp_enqueue_scripts', 'remove_head_scripts' );
+
+add_filter('gform_init_scripts_footer', '__return_true');
 
 /* ------------------------------------------------------------------------
 	Maximum characters for Excerpt
@@ -122,5 +198,4 @@ function my_mce_before_init_insert_formats( $init_array ) {
   return $init_array;
 }
 add_filter( 'tiny_mce_before_init', 'my_mce_before_init_insert_formats' );*/
-
 ?>

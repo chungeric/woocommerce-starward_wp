@@ -16,7 +16,7 @@ function roots_setup() {
 
   // Add post thumbnails (http://codex.wordpress.org/Post_Thumbnails)
   add_theme_support('post-thumbnails');
-  add_image_size('hero', 1750, 800, true);
+  // add_image_size('hero', 1750, 800, true);
   // set_post_thumbnail_size(150, 150, false);
   // add_image_size('category-thumb', 300, 9999); // 300px wide (and unlimited height)
 
@@ -42,3 +42,5 @@ define('RELATIVE_PLUGIN_PATH',      str_replace(site_url() . '/', '', plugins_ur
 define('FULL_RELATIVE_PLUGIN_PATH', WP_BASE . '/' . RELATIVE_PLUGIN_PATH);
 define('RELATIVE_CONTENT_PATH',     str_replace(site_url() . '/', '', content_url()));
 define('THEME_PATH',                RELATIVE_CONTENT_PATH . '/themes/' . THEME_NAME);
+define('SITE_URL',                  get_bloginfo('url'));
+define('THEME_VERSION',             wp_get_theme()->get( 'Version' ));
