@@ -8,7 +8,6 @@
   <meta name="format-detection" content="telephone=no">
   <meta name="SKYPE_TOOLBAR" content="SKYPE_TOOLBAR_PARSER_COMPATIBLE" />
   <link rel="shortcut icon" href="<?php echo get_template_directory_uri(); ?>/assets/img/favicon.ico">
-  <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/css/styles.min.css">
   <?php wp_head(); ?>
   <?php if (wp_count_posts()->publish > 0) : ?>
   <link rel="alternate" type="application/rss+xml" title="<?php echo get_bloginfo('name'); ?> Feed" href="<?php echo home_url(); ?>/feed/">
