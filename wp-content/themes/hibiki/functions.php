@@ -36,3 +36,11 @@ foreach (glob(dirname(__FILE__) . "/lib/content/*.php") as $filename) {
 foreach (glob(dirname(__FILE__) . "/lib/tweaks/*.php") as $filename) {
   require_once $filename;
 }
+
+// --------------------------------------------------------------------------
+//   Include Starward
+// --------------------------------------------------------------------------
+
+foreach (glob(dirname(__FILE__) . "/lib/starward/*.php") as $filename) {
+  require_once $filename;
+}
