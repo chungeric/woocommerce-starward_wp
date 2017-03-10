@@ -1820,7 +1820,7 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 		if ( ! $this->has_subscription( $entry ) ) {
 			$entry['payment_status']   = 'Active';
 			$entry['payment_amount']   = $subscription['amount'];
-			$entry['payment_date']     = ! rgempty( $subscription, 'subscription_start_date' ) ? rgar( $subscription, 'subscription_start_date' ) : gmdate( 'y-m-d H:i:s' );
+			$entry['payment_date']     = ! rgempty( 'subscription_start_date', $subscription ) ? $subscription['subscription_start_date'] : gmdate( 'Y-m-d H:i:s' );
 			$entry['transaction_id']   = $subscription['subscription_id'];
 			$entry['transaction_type'] = '2'; // subscription
 			$entry['is_fulfilled']     = '1';

@@ -521,7 +521,7 @@ add_filter('get_search_form', 'roots_get_search_form');
 
 function hibiki_remove_footer_admin ()
 {
-  echo '<span id="footer-thankyou">Developed by <a href="https://www.birdbrain.com.au" target="_blank">Birdbrain</a></span>';
+  echo '<span id="footer-thankyou">Developed with <3 by <a href="https://www.birdbrain.com.au" target="_blank">Birdbrain</a></span>';
 }
 
 add_filter('admin_footer_text', 'hibiki_remove_footer_admin');
