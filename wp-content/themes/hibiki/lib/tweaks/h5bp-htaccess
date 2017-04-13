@@ -507,6 +507,11 @@ AddCharset utf-8 .css .js .xml .json .rss .atom
   Options -Indexes
 </IfModule>
 
+# Enable Basic Authentication for Starward
+<IfModule mod_rewrite.c>
+  RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
+
 
 # Block access to "hidden" directories or files whose names begin with a period. This
 # includes directories used by version control systems such as Subversion or Git.
