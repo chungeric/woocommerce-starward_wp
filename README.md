@@ -24,9 +24,8 @@ wp db create
 #### Install WordPress
 
 ```
-wp core install --url=http://localhost/directory_name --title="site_title" --admin_user=username --admin_email=someone@birdbrain.com.au --prompt=admin_password
+wp core install --url=http://localhost/directory_name --title="site_title" --admin_user=username --admin_email=someone@birdbrain.com.au --admin_password=password
 ```
-- Enter password to complete the installation
 
 ## Install Starward dependencies
 
