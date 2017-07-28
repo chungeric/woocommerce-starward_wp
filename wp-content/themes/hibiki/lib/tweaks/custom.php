@@ -78,4 +78,20 @@ function my_mce_before_init_insert_formats( $init_array ) {
   return $init_array;
 }
 add_filter( 'tiny_mce_before_init', 'my_mce_before_init_insert_formats' );*/
+
+/* ------------------------------------------------------------------------
+	Admin CSS
+------------------------------------------------------------------------ */
+function admin_style() {
+  wp_enqueue_style('admin-styles', get_template_directory_uri().'/assets/css/admin.css');
+}
+add_action('admin_enqueue_scripts', 'admin_style');
+
+//google api for ACF
+add_filter('acf/settings/google_api_key', function () {
+    return 'AIzaSyATFBMD0IRsvqxTHRfJWwQH2lKQ1dikQ10';
+});
+
+//GF hide field label option
+add_filter( 'gform_enable_field_label_visibility_settings', '__return_true' );
 ?>
