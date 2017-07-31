@@ -3,7 +3,167 @@
     "title": "Settings",
     "fields": [
         {
-            "default_value": "starward_wp",
+            "placement": "top",
+            "endpoint": 0,
+            "key": "field_59408b86e0265",
+            "label": "General",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "http:\/\/localhost:3000",
+            "prepend": "",
+            "append": "",
+            "key": "field_58c1d5ab2e416",
+            "label": "Local URL",
+            "name": "local_redis_url",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33.3333",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "http:\/\/www.staging.com",
+            "prepend": "",
+            "append": "",
+            "key": "field_58c1d6522e417",
+            "label": "Staging URL",
+            "name": "staging_redis_url",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33.3333",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "http:\/\/www.production.com",
+            "prepend": "",
+            "append": "",
+            "key": "field_58c1d6782e418",
+            "label": "Production URL",
+            "name": "production_redis_url",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33.3333",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "placement": "top",
+            "endpoint": 0,
+            "key": "field_59408baae0266",
+            "label": "Cache",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "http:\/\/localhost:3000",
+            "prepend": "",
+            "append": "\/api\/flushredis",
+            "key": "field_59408f9443232",
+            "label": "Redis URL",
+            "name": "redis_url",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33.3333",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_59408bd8e0267",
+            "label": "Flush web app cache",
+            "name": "",
+            "type": "html",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "html": "<a href=\"[get_acf_option option='redis_url']\/api\/flushredis\" class=\"button\" target=\"blank\">Flush Redis Cache<\/a>",
+            "new_lines": "wpautop",
+            "esc_html": 0
+        },
+        {
+            "default_value": 0,
+            "message": "",
+            "ui": 0,
+            "ui_on_text": "",
+            "ui_off_text": "",
+            "key": "field_5950b8622a80e",
+            "label": "Development Mode",
+            "name": "developmentMode",
+            "type": "true_false",
+            "instructions": "This will flush Redis on saving or updating a post.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "placement": "top",
+            "endpoint": 0,
+            "key": "field_59408c63e99b5",
+            "label": "Contact Information",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "default_value": "Starward",
             "maxlength": "",
             "placeholder": "",
             "prepend": "",
@@ -22,15 +182,52 @@
             }
         },
         {
+            "height": "",
+            "center_lat": "",
+            "center_lng": "",
+            "zoom": "",
+            "key": "field_59436cab6cd26",
+            "label": "Office Address",
+            "name": "address",
+            "type": "google_map",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
             "default_value": "",
-            "new_lines": "br",
             "maxlength": "",
             "placeholder": "",
-            "rows": 5,
-            "key": "field_575111c25223f",
-            "label": "Office Address",
-            "name": "officeAddress",
-            "type": "textarea",
+            "prepend": "",
+            "append": "",
+            "key": "field_59437400ed6f8",
+            "label": "Address Display",
+            "name": "addressDisplay",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "key": "field_59488ef504158",
+            "label": "Address Postal",
+            "name": "addressPostal",
+            "type": "text",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -245,63 +442,6 @@
                 "class": "",
                 "id": ""
             }
-        },
-        {
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "http:\/\/localhost:3000",
-            "prepend": "",
-            "append": "\/api\/flushredis",
-            "key": "field_58c1d5ab2e416",
-            "label": "Local Redis URL",
-            "name": "local_redis_url",
-            "type": "text",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "33.3333",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "http:\/\/www.staging.com",
-            "prepend": "",
-            "append": "\/api\/flushredis",
-            "key": "field_58c1d6522e417",
-            "label": "Staging Redis URL",
-            "name": "staging_redis_url",
-            "type": "text",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "33.3333",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "http:\/\/www.production.com",
-            "prepend": "",
-            "append": "\/api\/flushredis",
-            "key": "field_58c1d6782e418",
-            "label": "Production Redis URL",
-            "name": "production_redis_url",
-            "type": "text",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "33.3333",
-                "class": "",
-                "id": ""
-            }
         }
     ],
     "location": [
@@ -309,7 +449,7 @@
             {
                 "param": "options_page",
                 "operator": "==",
-                "value": "acf-options-settings"
+                "value": "acf-options-web-app"
             }
         ]
     ],
@@ -321,5 +461,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1489107473
+    "modified": 1501249931
 }
