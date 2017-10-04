@@ -26,7 +26,7 @@
             "append": "",
             "key": "field_58c1d5ab2e416",
             "label": "Local URL",
-            "name": "local_redis_url",
+            "name": "local_url",
             "type": "text",
             "instructions": "",
             "required": 0,
@@ -45,7 +45,7 @@
             "append": "",
             "key": "field_58c1d6522e417",
             "label": "Staging URL",
-            "name": "staging_redis_url",
+            "name": "staging_url",
             "type": "text",
             "instructions": "",
             "required": 0,
@@ -64,13 +64,60 @@
             "append": "",
             "key": "field_58c1d6782e418",
             "label": "Production URL",
-            "name": "production_redis_url",
+            "name": "production_url",
             "type": "text",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
                 "width": "33.3333",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "multiple": 0,
+            "allow_null": 0,
+            "choices": {
+                "local": "Local",
+                "staging": "Staging",
+                "production": "Production"
+            },
+            "default_value": [
+                "local"
+            ],
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": "",
+            "return_format": "value",
+            "key": "field_59d43a69c0af2",
+            "label": "Environment",
+            "name": "environment",
+            "type": "select",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "key": "field_59d440a0c6aec",
+            "label": "Exclude Slug",
+            "name": "exclude_slug",
+            "type": "text",
+            "instructions": "This is the appending repo name on the WordPress URL (starward_wp or similar).\r\n\r\nLeave blank on production",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
                 "class": "",
                 "id": ""
             }
@@ -111,6 +158,9 @@
             }
         },
         {
+            "html": "<a href=\"[get_acf_option option='redis_url']\/api\/flushredis\" class=\"button\" target=\"blank\">Flush Redis Cache<\/a>",
+            "esc_html": 0,
+            "new_lines": "wpautop",
             "key": "field_59408bd8e0267",
             "label": "Flush web app cache",
             "name": "",
@@ -122,10 +172,7 @@
                 "width": "",
                 "class": "",
                 "id": ""
-            },
-            "html": "<a href=\"[get_acf_option option='redis_url']\/api\/flushredis\" class=\"button\" target=\"blank\">Flush Redis Cache<\/a>",
-            "new_lines": "wpautop",
-            "esc_html": 0
+            }
         },
         {
             "default_value": 0,
@@ -163,7 +210,7 @@
             }
         },
         {
-            "default_value": "Starward",
+            "default_value": "Starward WP",
             "maxlength": "",
             "placeholder": "",
             "prepend": "",
@@ -461,5 +508,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1501249931
+    "modified": 1507082661
 }

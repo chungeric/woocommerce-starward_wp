@@ -1,3 +1,13 @@
+<?php
+  $environment = get_field('environment', 'option');
+  $url = get_field($environment . '_url', 'option');
+  $excludeslug = get_field('exclude_slug', 'option');
+  $path = $_SERVER['REQUEST_URI'];
+  if ($url && $environment && strpos($path, 'wp-json') === false) {
+    header("HTTP/1.1 301 Moved Permanently");
+    header("Location: " . $url . str_replace($excludeslug, '', $path));
+  }
+?>
 <!DOCTYPE html>
 <!--[if IE 8]>         <html class="no-js ie8down" <?php language_attributes(); ?>> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" <?php language_attributes(); ?>> <!--<![endif]-->
