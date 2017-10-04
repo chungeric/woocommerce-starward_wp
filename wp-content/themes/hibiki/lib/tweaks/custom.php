@@ -33,6 +33,15 @@ function fetch_client_name($field) {
 }
 add_filter('acf/load_field/name=name', 'fetch_client_name');
 /* ------------------------------------------------------------------------
+  Include ACF data in revisions API response
+------------------------------------------------------------------------ */
+function acf_revision_support($types)
+{
+    $types['revision'] = 'revision';
+    return $types;
+}
+add_filter('acf/rest_api/types', 'acf_revision_support');
+/* ------------------------------------------------------------------------
 	Maximum characters for Excerpt
 ------------------------------------------------------------------------ */
 function excerpt_count_js(){
