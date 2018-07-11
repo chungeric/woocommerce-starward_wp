@@ -103,4 +103,38 @@ add_filter('acf/settings/google_api_key', function () {
 
 //GF hide field label option
 add_filter( 'gform_enable_field_label_visibility_settings', '__return_true' );
+
+/* ------------------------------------------------------------------------
+  Filter WooCommerce Products Filter Request
+------------------------------------------------------------------------ */
+function filter_product_category_multiple_attributes( $query ) {
+  if ($query->is_main_query()) {
+    return;
+  }
+  // // Filter by multiple attributes and terms.
+  foreach ( wc_get_attribute_taxonomy_names() as $attribute ) {
+    if ( isset($_GET[$attribute]) ) {
+  		$array = array(
+  			'relation' 	 => 'AND'
+  		);
+  		foreach ( wc_get_attribute_taxonomy_names() as $attribute ) {
+  			if ( isset($_GET[$attribute]) ) {
+  				$array[] = array(
+  					'taxonomy' => $attribute,
+  					'field'    => 'term_id',
+  					'terms'    => explode(',', $_GET[$attribute]),
+  					'operator' => 'IN'
+  				);
+  			}
+  		}
+      $tax_query = $query->get( 'tax_query' );
+      $tax_query[] = $array;
+  		$query->set( 'tax_query', $tax_query );
+  		break;
+    }
+  }
+  return $query;
+}
+add_action( 'pre_get_posts', 'filter_product_category_multiple_attributes' );
+
 ?>
