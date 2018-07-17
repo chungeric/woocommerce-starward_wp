@@ -137,4 +137,49 @@ function filter_product_category_multiple_attributes( $query ) {
 }
 add_action( 'pre_get_posts', 'filter_product_category_multiple_attributes' );
 
+/* ------------------------------------------------------------------------
+  Get WooCommerce Color Attribute Hex Values for a Single Prroduct
+------------------------------------------------------------------------ */
+function filter_woocommerce_rest_prepare_product_object( $response, $object, $request ) {
+  if( empty( $response->data ) ) {
+    return $response;
+  }
+
+  // Get an array of attributes whose attribute type is color
+  $color_type_attribute_taxonomies = array_filter(wc_get_attribute_taxonomies(), function($attribute_taxonomy) {
+    return $attribute_taxonomy->attribute_type == 'color';
+  });
+
+  // Loop through the attributes on current product
+  $attributes = $response->data['attributes'];
+  foreach($attributes as $attrkey => $attribute) {
+
+    // Loop through the color type attributes
+    foreach($color_type_attribute_taxonomies as $tax_object) {
+
+      //Check if current attribute is a color type attribute
+      if ($attribute['id'] == $tax_object->attribute_id) {
+
+        // Get current attribute's options
+        $options = $response->data['attributes'][$attrkey]['options'];
+
+        // Get current attribute's terms
+        $color_terms = get_terms('pa_' . $tax_object->attribute_name);
+
+        foreach( $options as $option ) {
+          foreach($color_terms as $term) {
+            if ($term->name == $option) {
+
+              // Add a new swatch with hex value for each color option
+              $response->data['attributes'][$attrkey]['swatches'][$option] = get_term_meta( $term->term_id, 'product_attribute_color', true);
+            }
+          }
+        }
+      }
+    }
+  }
+  return $response;
+}
+add_filter( 'woocommerce_rest_prepare_product_object', 'filter_woocommerce_rest_prepare_product_object', 10, 3 );
+
 ?>
