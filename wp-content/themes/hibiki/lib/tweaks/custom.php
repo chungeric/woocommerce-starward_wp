@@ -138,38 +138,38 @@ function filter_product_category_multiple_attributes( $query ) {
 add_action( 'pre_get_posts', 'filter_product_category_multiple_attributes' );
 
 /* ------------------------------------------------------------------------
-  Get WooCommerce Color Attribute Hex Values for a Single Prroduct
+  Manipulating the WordPress Product response
 ------------------------------------------------------------------------ */
 function filter_woocommerce_rest_prepare_product_object( $response, $object, $request ) {
   if( empty( $response->data ) ) {
     return $response;
   }
 
-  // Get an array of attributes whose attribute type is color
-  $color_type_attribute_taxonomies = array_filter(wc_get_attribute_taxonomies(), function($attribute_taxonomy) {
-    return $attribute_taxonomy->attribute_type == 'color';
-  });
+  $attribute_taxonomies = wc_get_attribute_taxonomies();
 
   // Loop through the attributes on current product
   $attributes = $response->data['attributes'];
   foreach($attributes as $attrkey => $attribute) {
 
+    /* ########################################################
+      - Adding new swatch key to attribute response for color attributes,
+        which holds the hex code for each swatch color option
+    ######################################################## */
+    // Get an array of attributes whose attribute type is color
+    $color_type_attribute_taxonomies = array_filter($attribute_taxonomies, function($attribute_taxonomy) {
+      return $attribute_taxonomy->attribute_type == 'color';
+    });
     // Loop through the color type attributes
     foreach($color_type_attribute_taxonomies as $tax_object) {
-
       //Check if current attribute is a color type attribute
       if ($attribute['id'] == $tax_object->attribute_id) {
-
         // Get current attribute's options
         $options = $response->data['attributes'][$attrkey]['options'];
-
         // Get current attribute's terms
         $color_terms = get_terms('pa_' . $tax_object->attribute_name);
-
         foreach( $options as $option ) {
           foreach($color_terms as $term) {
             if ($term->name == $option) {
-
               // Add a new swatch with hex value for each color option
               $response->data['attributes'][$attrkey]['swatches'][$option] = get_term_meta( $term->term_id, 'product_attribute_color', true);
             }
@@ -177,7 +177,41 @@ function filter_woocommerce_rest_prepare_product_object( $response, $object, $re
         }
       }
     }
+
+    /* ########################################################
+      - Adding attribute slug to the attribute response
+      - Adding more detailed option data to the attribute options response
+    ######################################################## */
+    foreach($attribute_taxonomies as $attribute_taxonomy) {
+      if ($attribute['id'] == $attribute_taxonomy->attribute_id) {
+
+        /* Add slug to current attribute response */
+        $response->data['attributes'][$attrkey]['slug'] = ('pa_' . $attribute_taxonomy->attribute_name);
+
+        /* Replace default options data with detailed options data for current attribute */
+        $options = $response->data['attributes'][$attrkey]['options'];
+        $new_options = array();
+        $attribute_terms = get_terms('pa_' . $attribute_taxonomy->attribute_name);
+
+        foreach( $options as $option ) {
+          foreach($attribute_terms as $attribute_term) {
+            if ($attribute_term->name == $option) {
+              $new_options[] = (object) [
+                id => $attribute_term->term_id,
+                name => $attribute_term->name,
+                slug => $attribute_term->slug,
+                taxonomy => $attribute_term->taxonomy,
+                description => $attribute_term->description,
+                count => $attribute_term->count
+              ];
+            }
+          }
+        }
+        $response->data['attributes'][$attrkey]['options'] = $new_options;
+      }
+    }
   }
+
   return $response;
 }
 add_filter( 'woocommerce_rest_prepare_product_object', 'filter_woocommerce_rest_prepare_product_object', 10, 3 );
