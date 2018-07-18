@@ -216,4 +216,128 @@ function filter_woocommerce_rest_prepare_product_object( $response, $object, $re
 }
 add_filter( 'woocommerce_rest_prepare_product_object', 'filter_woocommerce_rest_prepare_product_object', 10, 3 );
 
+
+
+add_action('rest_api_init', function () {
+	$namespace = 'starward/';
+ 	register_rest_route( $namespace, '/products/filters/category/(?P<category_id>.*?)', array(
+ 		'methods'  => 'GET',
+ 		'callback' => 'get_product_category_filters',
+ 	));
+});
+
+function get_product_category_attribute_terms($category_id) {
+  // Get products in category id selected
+  $args = array(
+    'post_type'             => 'product',
+    'post_status'           => 'publish',
+    'ignore_sticky_posts'   => 1,
+    'posts_per_page'        => -1, // return all products (offset ignored with -1)
+    'tax_query'             => array(
+      array(
+        'taxonomy'      => 'product_cat',
+        'field'         => 'term_id', //This is optional, as it defaults to 'term_id'
+        'terms'         => $category_id,
+        'operator'      => 'IN' // Possible values are 'IN', 'NOT IN', 'AND'.
+      ),
+      array(
+        'taxonomy'      => 'product_visibility',
+        'field'         => 'slug',
+        'terms'         => 'exclude-from-catalog', // Possibly 'exclude-from-search' too
+        'operator'      => 'NOT IN'
+      )
+    )
+  );
+  $products_response = new WP_Query($args);
+  $products = $products_response->posts;
+  // Get product attribute details
+  $attribute_taxonomies = wc_get_attribute_taxonomies();
+  // Initialize response array
+  $category_attribute_terms = array();
+  // For each product attribute
+  foreach($attribute_taxonomies as $attribute_taxonomy) {
+    // Get all attribute options for each product in the category
+    $options = array_map(function($product) use ($attribute_taxonomy) {
+      return get_the_terms($product->ID, 'pa_' . $attribute_taxonomy->attribute_name);
+    }, $products);
+    // Remove duplicate options
+    $unique_options =
+      array_values(
+        array_unique(
+          array_merge(...$options),
+          SORT_REGULAR
+        )
+      );
+    // Push attribute details and options to attribute terms array
+    $category_attribute_terms[] = (object) [
+      'id' => $attribute_taxonomy->attribute_id,
+      'name' => $attribute_taxonomy->attribute_name,
+      'label' => $attribute_taxonomy->attribute_label,
+      'slug' => 'pa_' . $attribute_taxonomy->attribute_name,
+      'options' => $unique_options
+    ];
+  }
+  return $category_attribute_terms;
+}
+
+function get_product_category_subcategories($category_id) {
+  $args = array(
+     'hierarchical' => 1,
+     'show_option_none' => '',
+     'hide_empty' => 0,
+     'parent' => $category_id,
+     'taxonomy' => 'product_cat'
+  );
+  $subcats = get_categories($args);
+  return $subcats;
+}
+
+function get_product_category_price_min_max($category_id) {
+  // Get products ordered by price (lowest to highest)
+  $args = array(
+    'post_type'             => 'product',
+    'post_status'           => 'publish',
+    'orderby'               => 'meta_value_num',
+    'meta_key'              => '_price',
+    'order'                 => 'asc',
+    'ignore_sticky_posts'   => 1,
+    'posts_per_page'        => -1, // return all products (offset ignored with -1)
+    'tax_query'             => array(
+      array(
+        'taxonomy'      => 'product_cat',
+        'field'         => 'term_id', //This is optional, as it defaults to 'term_id'
+        'terms'         => $category_id,
+        'operator'      => 'IN' // Possible values are 'IN', 'NOT IN', 'AND'.
+      ),
+      array(
+        'taxonomy'      => 'product_visibility',
+        'field'         => 'slug',
+        'terms'         => 'exclude-from-catalog', // Possibly 'exclude-from-search' too
+        'operator'      => 'NOT IN'
+      )
+    )
+  );
+  $products_response = new WP_Query($args);
+  $products = $products_response->posts;
+
+  // Get lowest and highest price from first and last product
+  $min_price = wc_get_product( reset($products)->ID )->get_price();
+  $max_price = wc_get_product( end($products)->ID )->get_price();
+  return (object) [
+    'min_price' => $min_price,
+    'max_price' => $max_price
+  ];
+}
+
+function get_product_category_filters($data) {
+  // Get the category id from the request query
+  $category_id = $data['category_id'];
+  // Return category filters object
+  return (object) [
+    'attributes'      => get_product_category_attribute_terms($category_id),
+    'subcategories'   => get_product_category_subcategories($category_id),
+    'price'           => get_product_category_price_min_max($category_id)
+  ];
+}
+
 ?>
