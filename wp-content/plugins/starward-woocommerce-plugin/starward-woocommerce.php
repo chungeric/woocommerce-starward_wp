@@ -138,16 +138,27 @@ function filter_woocommerce_rest_prepare_product_object( $response, $object, $re
     return (object) [
       'variation_id' => $variation->get_id(),
       'image_url' => wp_get_attachment_url($variation->get_image_id()),
-      'add_to_cart_text' => $variation->add_to_cart_text(),
       'variation_regular_price' => $variation->get_regular_price(),
       'variation_sale_price' => $variation->get_sale_price(),
-      'variation_attributes' => $variation->get_attributes(),
-      'is_on_sale' => $variation->is_on_sale(),
-      'has_options' => $variation->has_options()
+      'attributes' => $variation->get_attributes(),
+      'is_on_sale' => $variation->is_on_sale()
     ];
   }, $variation_ids);
 
   $response->data['variations'] = $detailed_variations;
+
+
+  /* ########################################################
+    - Get ALL Variation attributes for a product
+  ######################################################## */
+  if ($response->data['type'] == 'variable') {
+    $variation_attributes = wc_get_product($response->data['id'])->get_variation_attributes();
+    $variation_attributes = array_map(function($attribute) {
+      return (array_values($attribute));
+    }, $variation_attributes);
+    $response->data['variation_attributes'] = $variation_attributes;
+  }
+
 
 
   /* Return new response */
